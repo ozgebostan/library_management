@@ -132,7 +132,12 @@ class BorrowRecordTest {
         @DisplayName("should set status to BORROWED")
         void shouldSetStatusToBorrowed() {
             // TODO: Verify default status is BORROWED
-            fail("Not implemented yet");
+
+            //Arrange and Act
+            BorrowRecord record = new BorrowRecord(createSampleBook(), createSampleMember());
+
+            //Assert
+            assertEquals(BorrowStatus.BORROWED, record.getStatus());
         }
     }
 }
