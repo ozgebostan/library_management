@@ -140,7 +140,13 @@ class BorrowServiceTest {
         void shouldThrow_WhenMemberInactive() {
             // TODO: Set member.active = false
             //       Then verify IllegalStateException is thrown with appropriate message
-            fail("Not implemented yet");
+            sampleMember.setActive(false);
+            when(memberRepository.findById(1L)).thenReturn(Optional.of(sampleMember));
+
+            assertThrows(IllegalStateException.class,
+                    () -> borrowService.borrowBook(1L, 1L));
+
+            verify(borrowRecordRepository, never()).save(any());
         }
 
         @Test
