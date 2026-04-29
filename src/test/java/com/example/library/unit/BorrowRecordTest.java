@@ -1,7 +1,6 @@
 package com.example.library.unit;
 
 import com.example.library.model.*;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -97,7 +96,6 @@ class BorrowRecordTest {
             assertFalse(record.isOverdue(beforeDue));
         }
 
-        @Disabled
         @Test
         @DisplayName("should return false when book is already returned (even if past due)")
         void shouldNotBeOverdue_WhenAlreadyReturned() {
@@ -106,7 +104,6 @@ class BorrowRecordTest {
             fail("Not implemented yet");
         }
 
-        @Disabled
         @Test
         @DisplayName("should return false on exactly the due date")
         void shouldNotBeOverdue_OnExactDueDate() {

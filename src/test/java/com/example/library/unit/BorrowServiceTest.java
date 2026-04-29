@@ -7,7 +7,10 @@ import com.example.library.repository.BookRepository;
 import com.example.library.repository.BorrowRecordRepository;
 import com.example.library.repository.MemberRepository;
 import com.example.library.service.BorrowService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -116,7 +119,7 @@ class BorrowServiceTest {
         // TODO: Students should write the remaining borrowBook() tests
         // =====================================================================
 
-        @Disabled
+
         @Test
         @DisplayName("should throw when member has reached borrowing limit")
         void shouldThrow_WhenBorrowLimitReached() {
@@ -125,7 +128,6 @@ class BorrowServiceTest {
             fail("Not implemented yet");
         }
 
-        @Disabled
         @Test
         @DisplayName("should throw when member already has this book borrowed")
         void shouldThrow_WhenDuplicateBorrow() {
@@ -148,7 +150,6 @@ class BorrowServiceTest {
             verify(borrowRecordRepository, never()).save(any());
         }
 
-        @Disabled
         @Test
         @DisplayName("should decrease available copies after successful borrow")
         void shouldDecreaseAvailableCopies() {
@@ -166,7 +167,6 @@ class BorrowServiceTest {
     @DisplayName("returnBook()")
     class ReturnBookTests {
 
-        @Disabled
         @Test
         @DisplayName("should successfully return a borrowed book")
         void shouldReturnBook_WhenBorrowed() {
@@ -179,7 +179,6 @@ class BorrowServiceTest {
             fail("Not implemented yet");
         }
 
-        @Disabled
         @Test
         @DisplayName("should throw when trying to return an already returned book")
         void shouldThrow_WhenAlreadyReturned() {
@@ -188,7 +187,6 @@ class BorrowServiceTest {
             fail("Not implemented yet");
         }
 
-        @Disabled
         @Test
         @DisplayName("should throw when borrow record not found")
         void shouldThrow_WhenRecordNotFound() {
