@@ -1,13 +1,21 @@
 package com.example.library.unit;
 
-import com.example.library.model.*;
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.example.library.model.Book;
+import com.example.library.model.BorrowRecord;
+import com.example.library.model.BorrowStatus;
+import com.example.library.model.Genre;
+import com.example.library.model.Member;
+import com.example.library.model.MembershipType;
 
 /**
  * UNIT TEST - Model Layer
@@ -107,8 +115,10 @@ class BorrowRecordTest {
         @Test
         @DisplayName("should return false on exactly the due date")
         void shouldNotBeOverdue_OnExactDueDate() {
-            // TODO: Check isOverdue() when asOfDate == dueDate
-            fail("Not implemented yet");
+            BorrowRecord record = new BorrowRecord(createSampleBook(), createSampleMember());
+            LocalDate exactDueDate = record.getDueDate();
+            
+            assertFalse(record.isOverdue(exactDueDate));
         }
     }
 
