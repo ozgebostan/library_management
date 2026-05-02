@@ -176,10 +176,18 @@ class BorrowServiceTest {
         @Test
         @DisplayName("should decrease available copies after successful borrow")
         void shouldDecreaseAvailableCopies() {
-            // TODO: After borrowBook(), verify that book.availableCopies decreased by 1
-            //       Hint: Use ArgumentCaptor to capture the Book saved to repository
-            fail("Not implemented yet");
-        }
+            sampleBook.setAvailableCopies(3);
+            when(memberRepository.findById(1L)).thenReturn(Optional.of(sampleMember));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(sampleBook));
+            when(borrowRecordRepository.countActiveBorrowsByMember(1L)).thenReturn(0);
+            borrowService.borrowBook(1L, 1L);
+            ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
+            verify(bookRepository).save(bookCaptor.capture());
+    
+            Book savedBook = bookCaptor.getValue();
+            assertEquals(2, savedBook.getAvailableCopies(),
+                "Available copies should decrease by 1 after a successful borrow");
+}
     }
 
     // =========================================================================
