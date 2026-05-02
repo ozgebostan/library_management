@@ -211,12 +211,19 @@ class BorrowServiceTest {
         }
 
         @Test
-        @DisplayName("should throw when trying to return an already returned book")
-        void shouldThrow_WhenAlreadyReturned() {
-            // TODO: Create a BorrowRecord with RETURNED status
-            //       Verify IllegalStateException is thrown
-            fail("Not implemented yet");
-        }
+@DisplayName("should throw when trying to return an already returned book")
+void shouldThrow_WhenAlreadyReturned() {
+    BorrowRecord record = new BorrowRecord(sampleBook, sampleMember);
+    record.setId(100L);
+    record.setStatus(BorrowStatus.RETURNED);
+    when(borrowRecordRepository.findById(100L)).thenReturn(Optional.of(record));
+    IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+        borrowService.returnBook(100L);
+    });
+    assertEquals("This book has already been returned", exception.getMessage());
+    verify(borrowRecordRepository, never()).save(any(BorrowRecord.class));
+    verify(bookRepository, never()).save(any(Book.class));
+}
 
         @Test
         @DisplayName("should throw when borrow record not found")
