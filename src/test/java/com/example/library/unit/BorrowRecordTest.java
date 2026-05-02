@@ -105,20 +105,14 @@ class BorrowRecordTest {
         }
 
         @Test
-@DisplayName("should return false when book is already returned (even if past due)")
-void shouldNotBeOverdue_WhenAlreadyReturned() {
-    
-    BorrowRecord record = new BorrowRecord(createSampleBook(), createSampleMember());
-
-    
-    record.setStatus(BorrowStatus.RETURNED);
-    record.setReturnDate(record.getDueDate().plusDays(5));
-
-    
-    LocalDate checkDate = record.getDueDate().plusDays(10);
-
-    assertFalse(record.isOverdue(checkDate),
-            "Returned books should not be considered overdue even if checked after the due date.");
+        @DisplayName("should return false when book is already returned (even if past due)")
+        void shouldNotBeOverdue_WhenAlreadyReturned() {
+            BorrowRecord record = new BorrowRecord(createSampleBook(), createSampleMember());
+            record.setStatus(BorrowStatus.RETURNED);
+            record.setReturnDate(record.getDueDate().plusDays(5));
+            LocalDate checkDate = record.getDueDate().plusDays(10);
+            assertFalse(record.isOverdue(checkDate),
+                "Returned books should not be considered overdue even if checked after the due date.");
 }
 
         @Test
