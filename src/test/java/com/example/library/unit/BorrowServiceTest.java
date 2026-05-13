@@ -203,13 +203,23 @@ class BorrowServiceTest {
         @Test
         @DisplayName("should successfully return a borrowed book")
         void shouldReturnBook_WhenBorrowed() {
-            // TODO: Create a BorrowRecord with BORROWED status
-            //       Mock the repository to return it
-            //       Call returnBook() and verify:
-            //       - status changed to RETURNED
-            //       - returnDate is set
-            //       - available copies increased
-            fail("Not implemented yet");
+            BorrowRecord record = new BorrowRecord(sampleBook, sampleMember);
+            record.setId(100L);
+            record.setStatus(BorrowStatus.BORROWED);
+            sampleBook.setAvailableCopies(2);
+            when(borrowRecordRepository.findById(100L))
+                    .thenReturn(Optional.of(record));
+            when(borrowRecordRepository.save(any(BorrowRecord.class)))
+                    .thenReturn(record);
+            when(bookRepository.save(any(Book.class)))
+                    .thenReturn(sampleBook);
+            BorrowResponse response = borrowService.returnBook(100L);
+            assertNotNull(response);
+            assertEquals(BorrowStatus.RETURNED, record.getStatus());
+            assertNotNull(record.getReturnDate());
+            assertEquals(3, sampleBook.getAvailableCopies());
+            verify(borrowRecordRepository).save(record);
+            verify(bookRepository).save(sampleBook);
         }
 
         @Test
@@ -230,9 +240,15 @@ void shouldThrow_WhenAlreadyReturned() {
         @Test
         @DisplayName("should throw when borrow record not found")
         void shouldThrow_WhenRecordNotFound() {
-            // TODO: Mock repository to return empty Optional
-            //       Verify IllegalStateException is thrown
-            fail("Not implemented yet");
+            when(borrowRecordRepository.findById(999L))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(IllegalStateException.class,
+                    () -> borrowService.returnBook(999L));
+
+            verify(borrowRecordRepository, never()).save(any());
+
+            verify(bookRepository, never()).save(any());
         }
     }
 }
