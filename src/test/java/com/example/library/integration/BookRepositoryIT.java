@@ -142,7 +142,18 @@ class BookRepositoryIT extends AbstractIntegrationTest {
         void shouldSearchByAuthorKeyword() {
             // TODO: Use searchBooks() with an author name as keyword
             //       Verify it finds books by that author
-            fail("Not implemented yet");
+            createBook("978-0-54-792821-0", "The Lord of the Rings - The Fellowship of the Ring",
+                    "J. R. R. Tolkien",10, Genre.FICTION);
+
+            createBook("978-0-26-110236-1", "The Lord of the Rings - The Two Tower",
+                    "J. R. R. Tolkien",15, Genre.FICTION);
+
+            createBook("978-03", "Clean Code", "Robert C. Martin", 3, Genre.TECHNOLOGY);
+
+            List<Book> results = bookRepository.searchBooks("Tolkien");
+
+            assertThat(results).hasSize(2);
+            assertThat(results).extracting(Book::getAuthor).containsOnly("J. R. R. Tolkien");
         }
 
         @Test
