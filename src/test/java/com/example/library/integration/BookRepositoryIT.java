@@ -124,10 +124,24 @@ class BookRepositoryIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("should find books by genre")
         void shouldFindByGenre() {
-            // TODO: Save books of different genres
-            //       Query by Genre.SCIENCE and verify only matching books are returned
-            fail("Not implemented yet");
-        }
+            Book sciBook1 = new Book("978-1", "Dune", "Frank Herbert", 2, Genre.SCIENCE);
+            Book sciBook2 = new Book("978-2", "Foundation", "Isaac Asimov", 4, Genre.SCIENCE);
+            Book techBook = new Book("978-3", "Clean Architecture", "Robert C. Martin", 1, Genre.TECHNOLOGY);
+            bookRepository.save(sciBook1);
+            bookRepository.save(sciBook2);
+            bookRepository.save(techBook);
+
+            List<Book> scienceBooks = bookRepository.findByGenre(Genre.SCIENCE);
+            assertEquals(2, scienceBooks.size(), "Should only return books matching the requested genre");
+
+            boolean hasDune = scienceBooks.stream().anyMatch(b -> b.getTitle().equals("Dune"));
+            boolean hasFoundation = scienceBooks.stream().anyMatch(b -> b.getTitle().equals("Foundation"));
+            boolean hasCleanCode = scienceBooks.stream().anyMatch(b -> b.getTitle().equals("Clean Architecture"));
+
+            assertTrue(hasDune, "Result should include 'Dune'");
+            assertTrue(hasFoundation, "Result should include 'Foundation'");
+            assertFalse(hasCleanCode, "Result should NOT include 'Clean Architecture'");
+}
 
         @Test
         @DisplayName("should find books by author (case insensitive, partial match)")
