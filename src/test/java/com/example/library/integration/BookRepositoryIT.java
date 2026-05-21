@@ -160,7 +160,8 @@ class BookRepositoryIT extends AbstractIntegrationTest {
         @DisplayName("should return empty list when no books match search")
         void shouldReturnEmpty_WhenNoMatch() {
             // TODO: Search for a keyword that matches nothing
-            fail("Not implemented yet");
+            List<Book> results = bookRepository.searchBooks("nonexistent_keyword");
+            assertThat(results).isEmpty();
         }
     }
 

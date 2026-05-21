@@ -219,14 +219,22 @@ class LibraryApiIT extends AbstractIntegrationTest {
         @DisplayName("should return 404 when member does not exist")
         void shouldReturn404_WhenMemberNotFound() {
             // TODO: Try to borrow with a non-existent memberId
-            fail("Not implemented yet");
+            Book book = createTestBook("978-404M", "Valid Book", "Valid Author");
+            BorrowRequest borrowRequest = new BorrowRequest(book.getId(), 9999L);
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    baseUrl + "/borrows", borrowRequest, Map.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
         @Test
         @DisplayName("should return 404 when book does not exist")
         void shouldReturn404_WhenBookNotFound() {
             // TODO: Try to borrow a non-existent bookId
-            fail("Not implemented yet");
+            Member member = createTestMember("Bob", "bob@test.com", MembershipType.STANDARD);
+            BorrowRequest borrowRequest = new BorrowRequest(9999L, member.getId());
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    baseUrl + "/borrows", borrowRequest, Map.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
     }
 

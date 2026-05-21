@@ -5,15 +5,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
@@ -223,19 +221,19 @@ class BorrowServiceTest {
         }
 
         @Test
-@DisplayName("should throw when trying to return an already returned book")
-void shouldThrow_WhenAlreadyReturned() {
-    BorrowRecord record = new BorrowRecord(sampleBook, sampleMember);
-    record.setId(100L);
-    record.setStatus(BorrowStatus.RETURNED);
-    when(borrowRecordRepository.findById(100L)).thenReturn(Optional.of(record));
-    IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-        borrowService.returnBook(100L);
-    });
-    assertEquals("This book has already been returned", exception.getMessage());
-    verify(borrowRecordRepository, never()).save(any(BorrowRecord.class));
-    verify(bookRepository, never()).save(any(Book.class));
-}
+        @DisplayName("should throw when trying to return an already returned book")
+        void shouldThrow_WhenAlreadyReturned() {
+            BorrowRecord record = new BorrowRecord(sampleBook, sampleMember);
+            record.setId(100L);
+            record.setStatus(BorrowStatus.RETURNED);
+            when(borrowRecordRepository.findById(100L)).thenReturn(Optional.of(record));
+            IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+                borrowService.returnBook(100L);
+            });
+            assertEquals("This book has already been returned", exception.getMessage());
+            verify(borrowRecordRepository, never()).save(any(BorrowRecord.class));
+            verify(bookRepository, never()).save(any(Book.class));
+        }
 
         @Test
         @DisplayName("should throw when borrow record not found")
