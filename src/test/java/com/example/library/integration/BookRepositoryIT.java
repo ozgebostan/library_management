@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * INTEGRATION TEST - Repository Layer
@@ -124,23 +124,15 @@ class BookRepositoryIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("should find books by genre")
         void shouldFindByGenre() {
-            Book sciBook1 = new Book("978-1", "Dune", "Frank Herbert", 2, Genre.SCIENCE);
-            Book sciBook2 = new Book("978-2", "Foundation", "Isaac Asimov", 4, Genre.SCIENCE);
-            Book techBook = new Book("978-3", "Clean Architecture", "Robert C. Martin", 1, Genre.TECHNOLOGY);
-            bookRepository.save(sciBook1);
-            bookRepository.save(sciBook2);
-            bookRepository.save(techBook);
+            createBook("978-1", "Dune", "Frank Herbert", 2, Genre.SCIENCE);
+            createBook("978-2", "Foundation", "Isaac Asimov", 4, Genre.SCIENCE);
+            createBook("978-3", "Clean Architecture", "Robert C. Martin", 1, Genre.TECHNOLOGY);
 
             List<Book> scienceBooks = bookRepository.findByGenre(Genre.SCIENCE);
-            assertEquals(2, scienceBooks.size(), "Should only return books matching the requested genre");
 
-            boolean hasDune = scienceBooks.stream().anyMatch(b -> b.getTitle().equals("Dune"));
-            boolean hasFoundation = scienceBooks.stream().anyMatch(b -> b.getTitle().equals("Foundation"));
-            boolean hasCleanCode = scienceBooks.stream().anyMatch(b -> b.getTitle().equals("Clean Architecture"));
-
-            assertTrue(hasDune, "Result should include 'Dune'");
-            assertTrue(hasFoundation, "Result should include 'Foundation'");
-            assertFalse(hasCleanCode, "Result should NOT include 'Clean Architecture'");
+            assertThat(scienceBooks).hasSize(2);
+            assertThat(scienceBooks).extracting(Book::getTitle)
+                    .containsExactlyInAnyOrder("Dune", "Foundation");
 }
 
         @Test
