@@ -15,6 +15,7 @@ import org.springframework.http.*;
 
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -247,7 +248,15 @@ class LibraryApiIT extends AbstractIntegrationTest {
         void shouldCreateMember() {
             // TODO: POST a new member to /api/members
             //       Verify 201 status and response body
-            fail("Not implemented yet");
+            Member member = new Member("Philemona Cunk", "philemone@hotmail.com", MembershipType.STANDARD);
+            ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/members", member, Map.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(response.getBody()).isNotNull();
+
+            assertThat(response.getBody()).containsEntry("name", "Philemona Cunk");
+            assertThat(response.getBody()).containsEntry("email", "philemone@hotmail.com");
+            assertThat(response.getBody().get("id")).isNotNull();
         }
 
         @Test
