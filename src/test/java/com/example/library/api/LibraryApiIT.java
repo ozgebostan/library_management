@@ -248,14 +248,14 @@ class LibraryApiIT extends AbstractIntegrationTest {
         void shouldCreateMember() {
             // TODO: POST a new member to /api/members
             //       Verify 201 status and response body
-            Member member = new Member("Philemona Cunk", "philemone@hotmail.com", MembershipType.STANDARD);
+            Member member = new Member("Philemona Cunk", "philemone@test.com", MembershipType.STANDARD);
             ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/members", member, Map.class);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response.getBody()).isNotNull();
 
             assertThat(response.getBody()).containsEntry("name", "Philemona Cunk");
-            assertThat(response.getBody()).containsEntry("email", "philemone@hotmail.com");
+            assertThat(response.getBody()).containsEntry("email", "philemone@test.com");
             assertThat(response.getBody().get("id")).isNotNull();
         }
 
@@ -274,7 +274,10 @@ class LibraryApiIT extends AbstractIntegrationTest {
         void shouldReturn400_WhenInvalidEmail() {
             // TODO: POST a member with an invalid email
             //       Verify 400 BAD REQUEST
-            fail("Not implemented yet");
+            Member invalidMember = new Member("Ash Lynx", "ashly-test-email", MembershipType.STUDENT);
+            ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/members", invalidMember, Map.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
     }
 
