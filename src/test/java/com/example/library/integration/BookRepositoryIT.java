@@ -138,9 +138,15 @@ class BookRepositoryIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("should find books by author (case insensitive, partial match)")
         void shouldFindByAuthor() {
-            // TODO: Save books by different authors
-            //       Search by partial author name and verify results
-            fail("Not implemented yet");
+            createBook("978-1", "Clean Code", "Robert C. Martin", 3, Genre.TECHNOLOGY);
+            createBook("978-2", "Design Patterns", "Gang of Four", 5, Genre.TECHNOLOGY);
+            createBook("978-3", "The Pragmatic Programmer", "Robert C. Martin", 2, Genre.TECHNOLOGY);
+
+            List<Book> results = bookRepository.findByAuthorContainingIgnoreCase("robert");
+
+            assertThat(results).hasSize(2);
+            assertThat(results).extracting(Book::getAuthor)
+                    .containsOnly("Robert C. Martin");
         }
 
         @Test
@@ -178,17 +184,22 @@ class BookRepositoryIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("should enforce unique ISBN constraint")
         void shouldEnforceUniqueIsbn() {
-            // TODO: Try to save two books with the same ISBN
-            //       Verify a DataIntegrityViolationException is thrown
-            //       Hint: Use assertThrows() and flush the persistence context
-            fail("Not implemented yet");
+            createBook("978-SAME-ISBN", "First Book", "Author A", 3, Genre.FICTION);
+
+            assertThrows(org.springframework.dao.DataIntegrityViolationException.class, () -> {
+                createBook("978-SAME-ISBN", "Second Book", "Author B", 2, Genre.FICTION);
+            });
         }
 
         @Test
         @DisplayName("should handle deleting a book")
         void shouldDeleteBook() {
-            // TODO: Save a book, delete it, verify it's gone
-            fail("Not implemented yet");
+            Book saved = createBook("978-DELETE-ME", "Book To Delete", "Some Author", 1, Genre.FICTION);
+            Long id = saved.getId();
+
+            bookRepository.deleteById(id);
+
+            assertThat(bookRepository.findById(id)).isEmpty();
         }
     }
 }
