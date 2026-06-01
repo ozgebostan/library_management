@@ -261,13 +261,23 @@ class LibraryApiIT extends AbstractIntegrationTest {
 
         @Test
         @DisplayName("should deactivate a member via DELETE")
-        void shouldDeactivateMember() {
-            // TODO:
-            // 1. Create a member
-            // 2. DELETE /api/members/{id}
-            // 3. GET /api/members/{id} and verify active = false
-            fail("Not implemented yet");
-        }
+        void shouldDeactivateMember() throws Exception {
+   
+        Member member = new Member("John Doe", "john@example.com", MembershipType.STANDARD);
+        member.setActive(true); 
+        Member savedMember = memberRepository.save(member);
+        Long memberId = savedMember.getId();
+
+    
+        mockMvc.perform(delete("/api/members/" + memberId))
+            .andExpect(status().isOk()); 
+
+    
+        mockMvc.perform(get("/api/members/" + memberId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(memberId))
+            .andExpect(jsonPath("$.active").value(false)); 
+}
 
         @Test
         @DisplayName("should return 400 when creating member with invalid email")
