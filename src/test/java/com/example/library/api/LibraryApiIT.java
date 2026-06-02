@@ -197,23 +197,38 @@ class LibraryApiIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("should return 409 when borrowing limit exceeded")
         void shouldReturn409_WhenBorrowLimitExceeded() {
-            // TODO:
-            // 1. Create a STUDENT member (limit = 2 books)
-            // 2. Create 3 different books
-            // 3. Borrow 2 books successfully
-            // 4. Try to borrow a 3rd book — should return 409 CONFLICT
-            fail("Not implemented yet");
+            Member student = createTestMember("John", "john@test.com", MembershipType.STUDENT);
+            Book book1 = createTestBook("978-1", "Book One", "Author A");
+            Book book2 = createTestBook("978-2", "Book Two", "Author B");
+            Book book3 = createTestBook("978-3", "Book Three", "Author C");
+
+            restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book1.getId(), student.getId()), Map.class);
+            restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book2.getId(), student.getId()), Map.class);
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book3.getId(), student.getId()), Map.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         }
 
         @Test
         @DisplayName("should return 409 when no copies available")
         void shouldReturn409_WhenNoCopiesAvailable() {
-            // TODO:
-            // 1. Create a book with totalCopies = 1
-            // 2. Create 2 members
-            // 3. First member borrows the book successfully
-            // 4. Second member tries to borrow — should return 409
-            fail("Not implemented yet");
+            Book book = new Book("978-ONE-COPY", "Rare Book", "Some Author", 1, Genre.TECHNOLOGY);
+            book = bookRepository.save(book);
+
+            Member member1 = createTestMember("Alice", "alice@test.com", MembershipType.STANDARD);
+            Member member2 = createTestMember("Bob", "bob@test.com", MembershipType.STANDARD);
+
+            restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book.getId(), member1.getId()), Map.class);
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book.getId(), member2.getId()), Map.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         }
 
         @Test
@@ -261,23 +276,17 @@ class LibraryApiIT extends AbstractIntegrationTest {
 
         @Test
         @DisplayName("should deactivate a member via DELETE")
-        void shouldDeactivateMember() throws Exception {
-   
-        Member member = new Member("John Doe", "john@example.com", MembershipType.STANDARD);
-        member.setActive(true); 
-        Member savedMember = memberRepository.save(member);
-        Long memberId = savedMember.getId();
+        void shouldDeactivateMember() {
+            Member member = createTestMember("Charlie", "charlie@test.com", MembershipType.STANDARD);
 
-    
-        mockMvc.perform(delete("/api/members/" + memberId))
-            .andExpect(status().isOk()); 
+            restTemplate.delete(baseUrl + "/members/" + member.getId());
 
-    
-        mockMvc.perform(get("/api/members/" + memberId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(memberId))
-            .andExpect(jsonPath("$.active").value(false)); 
-}
+            ResponseEntity<Map> response = restTemplate.getForEntity(
+                    baseUrl + "/members/" + member.getId(), Map.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).containsEntry("active", false);
+        }
 
         @Test
         @DisplayName("should return 400 when creating member with invalid email")
