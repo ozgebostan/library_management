@@ -307,19 +307,40 @@ class LibraryApiIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("should search books by keyword via GET /api/books/search?keyword=...")
         void shouldSearchBooks() {
-            // TODO: Create several books, search by keyword, verify results
-            fail("Not implemented yet");
+            createTestBook("978-1", "Spring Boot", "Author A");
+            createTestBook("978-2", "Java Testing", "Author B");
+            createTestBook("978-3", "Cooking 101", "Author C");
+
+            ResponseEntity<Book[]> response = restTemplate.getForEntity(
+                    baseUrl + "/books/search?keyword=Spring", Book[].class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).hasSize(1);
+            assertThat(response.getBody()[0].getTitle()).isEqualTo("Spring Boot");
         }
 
         @Test
         @DisplayName("should get active borrows for a member")
         void shouldGetActiveBorrows() {
-            // TODO:
-            // 1. Create a member and 2 books
-            // 2. Borrow both books
-            // 3. Return one of them
-            // 4. GET /api/borrows/member/{id}/active — should return only 1
-            fail("Not implemented yet");
+            Member member = createTestMember("Ali", "ali@test.com", MembershipType.STANDARD);
+            Book book1 = createTestBook("978-B1", "Book 1", "Author 1");
+            Book book2 = createTestBook("978-B2", "Book 2", "Author 2");
+
+            ResponseEntity<Map> resp1 = restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book1.getId(), member.getId()), Map.class);
+            ResponseEntity<Map> resp2 = restTemplate.postForEntity(baseUrl + "/borrows",
+                    new BorrowRequest(book2.getId(), member.getId()), Map.class);
+
+            Number borrowId1 = (Number) resp1.getBody().get("id");
+            restTemplate.postForEntity(baseUrl + "/borrows/" + borrowId1.longValue() + "/return", null, Map.class);
+
+            ResponseEntity<BorrowRecord[]> activeBorrows = restTemplate.getForEntity(
+                    baseUrl + "/borrows/member/" + member.getId() + "/active", BorrowRecord[].class);
+
+            assertThat(activeBorrows.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(activeBorrows.getBody()).hasSize(1);
+            assertThat(activeBorrows.getBody()[0].getBook().getTitle()).isEqualTo("Book 2");
         }
+
     }
 }
