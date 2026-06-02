@@ -334,12 +334,12 @@ class LibraryApiIT extends AbstractIntegrationTest {
             Number borrowId1 = (Number) resp1.getBody().get("id");
             restTemplate.postForEntity(baseUrl + "/borrows/" + borrowId1.longValue() + "/return", null, Map.class);
 
-            ResponseEntity<BorrowRecord[]> activeBorrows = restTemplate.getForEntity(
-                    baseUrl + "/borrows/member/" + member.getId() + "/active", BorrowRecord[].class);
+            ResponseEntity<Map[]> activeBorrows = restTemplate.getForEntity(
+                    baseUrl + "/borrows/member/" + member.getId() + "/active", Map[].class);
 
             assertThat(activeBorrows.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(activeBorrows.getBody()).hasSize(1);
-            assertThat(activeBorrows.getBody()[0].getBook().getTitle()).isEqualTo("Book 2");
+            assertThat(activeBorrows.getBody()[0]).containsEntry("bookTitle", "Book 2");
         }
 
     }
