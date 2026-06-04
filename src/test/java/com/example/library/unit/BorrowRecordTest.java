@@ -87,13 +87,13 @@ class BorrowRecordTest {
     @DisplayName("isOverdue()")
     class IsOverdueTests {
 
-        @Test
-        @DisplayName("should return true when checked after due date and still borrowed")
-        void shouldBeOverdue_WhenPastDueDateAndStillBorrowed() {
-            BorrowRecord record = new BorrowRecord(createSampleBook(), createSampleMember());
-            LocalDate afterDue = record.getDueDate().plusDays(1);
-            assertTrue(record.isOverdue(afterDue));
-        }
+        @Test 
+        @DisplayName("should return true when checked after due date and still borrowed") 
+        void shouldBeOverdue_WhenPastDueDateAndStillBorrowed() { 
+            BorrowRecord record = new BorrowRecord(createSampleBook(), createSampleMember()); 
+            LocalDate afterDue = record.getDueDate().plusDays(1); 
+            assertTrue(record.isOverdue(afterDue)); 
+        } 
 
         @Test
         @DisplayName("should return false when checked before due date")

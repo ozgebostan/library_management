@@ -159,19 +159,19 @@ class BorrowServiceTest {
             verify(borrowRecordRepository, never()).save(any());
         }
 
-        @Test
-        @DisplayName("should throw when inactive member tries to borrow")
-        void shouldThrow_WhenMemberInactive() {
-            // TODO: Set member.active = false
-            //       Then verify IllegalStateException is thrown with appropriate message
-            sampleMember.setActive(false);
-            when(memberRepository.findById(1L)).thenReturn(Optional.of(sampleMember));
-
-            assertThrows(IllegalStateException.class,
-                    () -> borrowService.borrowBook(1L, 1L));
-
-            verify(borrowRecordRepository, never()).save(any());
-        }
+        @Test 
+        @DisplayName("should throw when inactive member tries to borrow") 
+        void shouldThrow_WhenMemberInactive() { 
+            // TODO: Set member.active = false 
+            //       Then verify IllegalStateException is thrown with appropriate message 
+            sampleMember.setActive(false); 
+            when(memberRepository.findById(1L)).thenReturn(Optional.of(sampleMember)); 
+ 
+            assertThrows(IllegalStateException.class, 
+                    () -> borrowService.borrowBook(1L, 1L)); 
+ 
+            verify(borrowRecordRepository, never()).save(any()); 
+        } 
 
         @Test
         @DisplayName("should decrease available copies after successful borrow")

@@ -304,20 +304,20 @@ class LibraryApiIT extends AbstractIntegrationTest {
     @DisplayName("Search & Filter API")
     class SearchApiTests {
 
-        @Test
-        @DisplayName("should search books by keyword via GET /api/books/search?keyword=...")
-        void shouldSearchBooks() {
-            createTestBook("978-1", "Spring Boot", "Author A");
-            createTestBook("978-2", "Java Testing", "Author B");
-            createTestBook("978-3", "Cooking 101", "Author C");
-
-            ResponseEntity<Book[]> response = restTemplate.getForEntity(
-                    baseUrl + "/books/search?keyword=Spring", Book[].class);
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).hasSize(1);
-            assertThat(response.getBody()[0].getTitle()).isEqualTo("Spring Boot");
-        }
+        @Test 
+        @DisplayName("should search books by keyword via GET /api/books/search?keyword=...") 
+        void shouldSearchBooks() { 
+            createTestBook("978-1", "Spring Boot", "Author A"); 
+            createTestBook("978-2", "Java Testing", "Author B"); 
+            createTestBook("978-3", "Cooking 101", "Author C"); 
+ 
+            ResponseEntity<Book[]> response = restTemplate.getForEntity( 
+                    baseUrl + "/books/search?keyword=Spring", Book[].class); 
+ 
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK); 
+            assertThat(response.getBody()).hasSize(1); 
+            assertThat(response.getBody()[0].getTitle()).isEqualTo("Spring Boot"); 
+        } 
 
         @Test
         @DisplayName("should get active borrows for a member")
